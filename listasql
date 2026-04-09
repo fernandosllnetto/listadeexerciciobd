@@ -1,0 +1,75 @@
+-- LISTA DE EXERCÍCIOS - SQL
+
+SELECT DISTINCT c.nome
+FROM clientes c
+JOIN vendas v ON c.id = v.cliente_id
+JOIN itens_venda iv ON v.id = iv.venda_id
+JOIN produtos p ON iv.produto_id = p.id
+WHERE p.nome LIKE '%ração%';
+
+SELECT 
+    c.nome,
+    AVG(iv.quantidade * iv.preco_unitario) AS media
+FROM clientes c
+JOIN vendas v ON c.id = v.cliente_id
+JOIN itens_venda iv ON v.id = iv.venda_id
+GROUP BY c.id, c.nome
+HAVING AVG(iv.quantidade * iv.preco_unitario) > 200;
+
+SELECT 
+    p.nome,
+    SUM(iv.quantidade) AS total_vendido
+FROM produtos p
+JOIN itens_venda iv ON p.id = iv.produto_id
+GROUP BY p.nome
+HAVING SUM(iv.quantidade) > 2;
+
+SELECT 
+    s.nome,
+    COUNT(a.id) AS total_agendamentos
+FROM servicos s
+LEFT JOIN agendamentos a ON s.id = a.servico_id
+GROUP BY s.nome
+ORDER BY total_agendamentos DESC
+LIMIT 3;
+
+SELECT 
+    c.nome,
+    SUM(iv.quantidade * iv.preco_unitario) AS total_gasto
+FROM clientes c
+JOIN vendas v ON c.id = v.cliente_id
+JOIN itens_venda iv ON v.id = iv.venda_id
+GROUP BY c.nome;
+
+SELECT AVG(total_gasto) AS media_geral
+FROM (
+    SELECT 
+        v.cliente_id,
+        SUM(iv.quantidade * iv.preco_unitario) AS total_gasto
+    FROM vendas v
+    JOIN itens_venda iv ON v.id = iv.venda_id
+    GROUP BY v.cliente_id
+) AS sub;
+
+SELECT 
+    c.nome,
+    SUM(iv.quantidade * iv.preco_unitario) AS total_gasto,
+    COUNT(p.id) AS total_pets
+FROM clientes c
+JOIN vendas v ON c.id = v.cliente_id
+JOIN itens_venda iv ON v.id = iv.venda_id
+LEFT JOIN pets p ON c.id = p.cliente_id
+GROUP BY c.id, c.nome
+HAVING 
+    SUM(iv.quantidade * iv.preco_unitario) > (
+        SELECT AVG(total_gasto)
+        FROM (
+            SELECT 
+                v2.cliente_id,
+                SUM(iv2.quantidade * iv2.preco_unitario) AS total_gasto
+            FROM vendas v2
+            JOIN itens_venda iv2 ON v2.id = iv2.venda_id
+            GROUP BY v2.cliente_id
+        ) AS media
+    )
+    AND COUNT(p.id) > 1;
