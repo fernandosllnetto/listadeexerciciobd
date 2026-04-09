@@ -7,6 +7,7 @@ JOIN itens_venda iv ON v.id = iv.venda_id
 JOIN produtos p ON iv.produto_id = p.id
 WHERE p.nome LIKE '%ração%';
 
+-- Questão 1 --
 SELECT 
     c.nome,
     AVG(iv.quantidade * iv.preco_unitario) AS media
