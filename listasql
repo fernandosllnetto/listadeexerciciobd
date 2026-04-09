@@ -1,5 +1,6 @@
 -- LISTA DE EXERCÍCIOS - SQL
 
+-- Questão 1
 SELECT DISTINCT c.nome
 FROM clientes c
 JOIN vendas v ON c.id = v.cliente_id
@@ -7,7 +8,7 @@ JOIN itens_venda iv ON v.id = iv.venda_id
 JOIN produtos p ON iv.produto_id = p.id
 WHERE p.nome LIKE '%ração%';
 
--- Questão 1 --
+-- Questão 2
 SELECT 
     c.nome,
     AVG(iv.quantidade * iv.preco_unitario) AS media
@@ -17,6 +18,7 @@ JOIN itens_venda iv ON v.id = iv.venda_id
 GROUP BY c.id, c.nome
 HAVING AVG(iv.quantidade * iv.preco_unitario) > 200;
 
+-- Questão 3
 SELECT 
     p.nome,
     SUM(iv.quantidade) AS total_vendido
@@ -25,6 +27,7 @@ JOIN itens_venda iv ON p.id = iv.produto_id
 GROUP BY p.nome
 HAVING SUM(iv.quantidade) > 2;
 
+-- Questão 4
 SELECT 
     s.nome,
     COUNT(a.id) AS total_agendamentos
@@ -34,6 +37,7 @@ GROUP BY s.nome
 ORDER BY total_agendamentos DESC
 LIMIT 3;
 
+-- Questão 5
 SELECT 
     c.nome,
     SUM(iv.quantidade * iv.preco_unitario) AS total_gasto
@@ -51,7 +55,6 @@ FROM (
     JOIN itens_venda iv ON v.id = iv.venda_id
     GROUP BY v.cliente_id
 ) AS sub;
-
 SELECT 
     c.nome,
     SUM(iv.quantidade * iv.preco_unitario) AS total_gasto,
