@@ -1,1 +1,1 @@
-# lista de exercicio bd
+# lista de exercício BD
